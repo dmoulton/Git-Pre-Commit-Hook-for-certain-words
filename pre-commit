@@ -4,9 +4,8 @@
 # Checks the files to be committed for the presence of print_r(), var_dump() and die()
 # The array below can be extended for further checks
 
-checks[1]="var_dump("
-checks[2]="print_r("
-checks[3]="die"
+checks[1]="puts"
+checks[2]="binding.pry"
 
 element_count=${#checks[@]}
 let "element_count = $element_count + 1"
