@@ -11,7 +11,8 @@ element_count=${#checks[@]}
 let "element_count = $element_count + 1"
 
 ROOT_DIR="$(pwd)/"
-LIST=$(git status | grep -e '\#.*\(modified\|added\)')
+LIST=$(git status | grep -e '\.*\(modified\|new file\)')
+echo "$LIST"
 ERRORS_BUFFER=""
 for file in $LIST
 do
@@ -22,14 +23,14 @@ do
         FILE_ACTION="modified"
     elif [ $(echo "$file" | grep 'added') ]; then
         FILE_ACTION="added"
-    else 
-        EXTENSION=$(echo "$file" | grep ".php$")
+    else
+        EXTENSION=$(echo "$file" | grep ".rb$")
         if [ "$EXTENSION" != "" ]; then
 
             index=1
             while [ "$index" -lt "$element_count" ]
             do
-                echo "Checking $FILE_ACTION file: $file [${checks[$index]}]" 
+                echo "Checking $FILE_ACTION file: $file [${checks[$index]}]"
                 ERRORS=$(grep "${checks[$index]}" $ROOT_DIR$file >&1)
                 if [ "$ERRORS" != "" ]; then
                     if [ "$ERRORS_BUFFER" != "" ]; then
@@ -45,11 +46,11 @@ do
     fi
 done
 if [ "$ERRORS_BUFFER" != "" ]; then
-    echo 
-    echo "These errors were found in try-to-commit files: "
+    echo
+    echo "You cannot commit code with the following text: "
     echo -e $ERRORS_BUFFER
-    echo 
-    echo "Can't commit, fix errors first."
+    echo
+    echo "Can't commit, remove the forbidden code first."
     exit 1
 else
     echo "Commited successfully."
